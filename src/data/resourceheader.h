@@ -1,3 +1,7 @@
+//
+//	data/resourceheader.h
+//
+
 #ifndef _RESOURCEHEADER_H
 #define _RESOURCEHEADER_H
 
@@ -47,6 +51,7 @@ namespace rage
 		unsigned GetPhysicalSize(unsigned leafSize) const { return m_PhysicalFlags.GetSize(leafSize); }
 	};
 	static_assert(sizeof(datResourceInfo) == 0x8, "sizeof(datResourceInfo) == 0x8");
+	static_assert(sizeof(datResourceInfo::Flags) == 0x4, "sizeof(datResourceInfo::Flags) == 0x4");
 
 	struct datResourceFileHeader
 	{

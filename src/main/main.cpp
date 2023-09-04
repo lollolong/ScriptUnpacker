@@ -1,16 +1,11 @@
+//
+//	main/main.cpp
+//
 
 #include "main.h"
 
-#include <cstdio>
-#include <stdio.h>
-#include <string>
-
-#include "..\data\resourceheader.h"
-#include "..\data\stringhash.h"
-
-
-#include <aes256.h>
-#include <zlib.h>
+#include "data/resourceheader.h"
+#include "data/stringhash.h"
 
 using namespace rage;
 

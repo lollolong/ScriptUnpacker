@@ -1,3 +1,6 @@
+//
+//	data/stringhash.h
+//
 
 namespace rage
 {

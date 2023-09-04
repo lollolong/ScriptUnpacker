@@ -1,7 +1,16 @@
+//
+//	main/main.h
+//
+
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
+#include <cstdio>
 #include <stdio.h>
+#include <string>
+
+#include <zlib.h>
+#include <aes256.h>
 
 // https://stackoverflow.com/questions/8487986/file-macro-shows-full-path
 #ifdef _MSC_VER

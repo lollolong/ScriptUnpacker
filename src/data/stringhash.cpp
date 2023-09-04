@@ -1,3 +1,6 @@
+//
+//	data/stringhash.cpp
+//
 
 #include "stringhash.h"
 
