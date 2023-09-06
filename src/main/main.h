@@ -21,6 +21,11 @@
 #define TRACK_MEMORY (0)
 #endif // _DEBUG
 
+// https://stackoverflow.com/questions/565704/how-to-correctly-convert-filesize-in-bytes-into-mega-or-gigabytes
+// KB = B >> 10
+// MB = KB >> 10 = B >> 20
+// GB = MB >> 10 = KB >> 20 = B >> 30
+
 unsigned g_Allocations = 0;
 
 void* operator new(size_t size, const char* file, int line)
@@ -28,7 +33,7 @@ void* operator new(size_t size, const char* file, int line)
 	void* pBlock = ::operator new(size);
 	#if TRACK_MEMORY
 	g_Allocations++;
-	printf("[ operator new ] Allocating 0x%llx bytes @ %p (%s:%i)\n", size, pBlock, file, line);
+	printf("[ operator new ] Allocating 0x%llx bytes (%zi KB) @ %p (%s:%i)\n", size, (size >> 10), pBlock, file, line);
 	#else
 	(void)file;
 	(void)line;
@@ -41,7 +46,7 @@ void* operator new[](size_t size, const char* file, int line)
 	void* pBlock = ::operator new[](size);
 	#if TRACK_MEMORY
 	g_Allocations++;
-	printf("[ operator new[] ] Allocating 0x%llx bytes @ %p (%s:%i)\n", size, pBlock, file, line);
+	printf("[ operator new[] ] Allocating 0x%llx bytes (%zi KB) @ %p (%s:%i)\n", size, (size >> 10), pBlock, file, line);
 	#else
 	(void)file;
 	(void)line;
