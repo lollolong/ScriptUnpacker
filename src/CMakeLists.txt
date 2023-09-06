@@ -9,6 +9,10 @@ set(SOURCES
 
     data/stringhash.cpp
     data/stringhash.h
+
+    data/util.cpp
+    data/util.h
+
     data/resourceheader.h
 )
 
@@ -41,3 +45,10 @@ target_compile_options(${PROJECT_NAME} PRIVATE
   $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
   $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic -Werror>
 )
+
+# Forceinclude
+#if(MSVC)
+#    add_definitions(/FI"main/main.h")
+#else()
+#    add_definitions(-include "main/main.h")
+#endif()
