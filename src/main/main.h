@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <stdio.h>
 #include <string>
+#include <sys/stat.h>
 
 #include <zlib.h>
 #include <aes256.h>

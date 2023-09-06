@@ -7,6 +7,8 @@
 
 namespace rage
 {
+	static const unsigned int g_ResourceLeafSize = 0x2000;
+
 	struct datResourceInfo
 	{
 		struct Flags
@@ -47,8 +49,8 @@ namespace rage
 		Flags m_VirtualFlags;
 		Flags m_PhysicalFlags;
 
-		unsigned GetVirtualSize(unsigned leafSize) const { return m_VirtualFlags.GetSize(leafSize); }
-		unsigned GetPhysicalSize(unsigned leafSize) const { return m_PhysicalFlags.GetSize(leafSize); }
+		unsigned GetVirtualSize(unsigned leafSize = g_ResourceLeafSize) const { return m_VirtualFlags.GetSize(leafSize); }
+		unsigned GetPhysicalSize(unsigned leafSize = g_ResourceLeafSize) const { return m_PhysicalFlags.GetSize(leafSize); }
 	};
 	static_assert(sizeof(datResourceInfo) == 0x8, "sizeof(datResourceInfo) == 0x8");
 	static_assert(sizeof(datResourceInfo::Flags) == 0x4, "sizeof(datResourceInfo::Flags) == 0x4");
