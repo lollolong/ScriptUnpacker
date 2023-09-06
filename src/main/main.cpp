@@ -11,6 +11,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define GAME_DUMP_FILE			"eboot.bin"
+#define DECRYPTION_KEYS_FILE	"decryption_keys.bin"
+
 using namespace rage;
 
 
@@ -57,37 +60,47 @@ int main(int argc, char* argv[])
 
 		fclose(pFile);
 		pFile = nullptr;
+
 		return 1;
 	}
 
-	if (!LoadDecryptionKeys("decryption_keys.bin"))
+	// First try to load the decryption keys from decryption_keys.bin
+	if (!LoadDecryptionKeys(DECRYPTION_KEYS_FILE))
 	{
-		if (!LoadDecryptionKeys("eboot.bin")) {
+		// Then try to locate a game dump and grab it from there. If this fails we exit.
+		if (!LoadDecryptionKeys(GAME_DUMP_FILE)) {
+			fclose(pFile);
+			pFile = nullptr;
+
 			return 1;
 		}
-		if (!SaveDecryptionKeys("decryption_keys.bin")) {
+
+		// Save the decryption keys for the next time after grabbing it from the game dump. We dont exit on failure here.
+		if (!SaveDecryptionKeys(DECRYPTION_KEYS_FILE)) {
 			printf("Failed to save the decryption keys.");
 		}
 	}
+	printf("Loaded all decryption keys.\n");
 
-	size_t fileSize				= GetFileSize(fPath);
-	size_t encryptedSize		= (fileSize - sizeof(header));
-	size_t inflatedSize			= (header.m_Info.GetPhysicalSize() + header.m_Info.GetVirtualSize());
+	size_t fileSize				= GetFileSize(fPath);				// The entire file size
+	size_t encryptedSize		= (fileSize - sizeof(header));		// Subtract the datResourceFileHeader for the encrypted size
+	size_t inflatedSize			= (header.m_Info.GetPhysicalSize() + header.m_Info.GetVirtualSize()); // Decompressed file size
 
-	unsigned char* pContent		= system_new unsigned char[encryptedSize];
-	unsigned char* pInflated	= system_new unsigned char[inflatedSize];
+	unsigned char* pContent		= system_new unsigned char[encryptedSize];	// For storing encrypted/decrypted content
+	unsigned char* pInflated	= system_new unsigned char[inflatedSize];	// For storing inflated (decompressed) content
 
 	fread_s(pContent, encryptedSize, encryptedSize, 1, pFile);
 
-	DecryptResource(GetKeyIndex(fName, fileSize), pContent, encryptedSize);
+	fclose(pFile);
+	pFile = nullptr;
 
+	DecryptResource(GetKeyIndex(fName, fileSize), pContent, encryptedSize); // Decrypt our script with AES-256-ECB
+
+	// Now inflate our decrypted buffer. On failure we need to cleanup our memory!
 	if (!InflateResource(pContent, pInflated, encryptedSize, inflatedSize))
 	{
 		system_delete_array(pContent);
 		system_delete_array(pInflated);
-
-		fclose(pFile);
-		pFile = nullptr;
 
 		return 1;
 	}
@@ -97,13 +110,12 @@ int main(int argc, char* argv[])
 	strcat_s(path, "_unpacked");
 	strcat_s(path, fExt);
 
-	SaveUnpackedResource(path, pInflated, inflatedSize);
+	// Save unpacked script
+	int success = SaveUnpackedResource(path, pInflated, inflatedSize) == true ? 0 : 1;
 
-	fclose(pFile);
-	pFile = nullptr;
-
+	// Final cleanup
 	system_delete_array(pContent);
 	system_delete_array(pInflated);
 
-	return 0;
+	return success;
 }

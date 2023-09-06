@@ -163,7 +163,7 @@ bool SaveUnpackedResource(const char* filename, const unsigned char* pBuffer, si
 	int err = fopen_s(&pFile, filename, "wb");
 
 	if (err != 0) {
-		printf("The output file could not be opened.\n");
+		printf("The output file %s could not be opened.\n", filename);
 		return false;
 	}
 
