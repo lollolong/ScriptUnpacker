@@ -111,7 +111,7 @@ int main(int argc, char* argv[])
 	strcat_s(path, fExt);
 
 	// Save unpacked script
-	int success = SaveUnpackedResource(path, pInflated, inflatedSize) == true ? 0 : 1;
+	const int success = SaveUnpackedResource(path, pInflated, inflatedSize) == true ? 0 : 1;
 
 	// Final cleanup
 	system_delete_array(pContent);
